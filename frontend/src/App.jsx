@@ -7,8 +7,24 @@ import {
 	CustomQueryBuilderWithField,
 	CustomQueryBuilder,
 } from "./components/customizedQueryBuilder";
+import Select from "react-select";
+
+const columnOptions = [
+	{ label: "id", value: "id" },
+	{ label: "name", value: "name" },
+	{ label: "symbol", value: "symbol" },
+	{ label: "sector", value: "sector" },
+	{ label: "price", value: "price" },
+	{ label: "volume", value: "volume" },
+	{ label: "timestamp", value: "timestamp" },
+	{ label: "marketCap", value: "marketCap" },
+	{ label: "earningsPerShare", value: "earningsPerShare" },
+	{ label: "dividendYield", value: "dividendYield" },
+	{ label: "peRatio", value: "peRatio" },
+];
 
 const App = () => {
+	const [selectedColumns, setSelectedColumns] = useState(columnOptions);
 	const [mongooseQuery, setMongooseQuery] = useState("");
 	const [startDate, setStartDate] = useState(
 		moment(new Date(2022, 0, 1)).unix()
@@ -42,20 +58,45 @@ const App = () => {
 
 	return (
 		<>
-			<DateRangePicker
-				startDate={startDate}
-				endDate={endDate}
-				onApplyCallback={(startDate, endDate) => {
-					console.log(
-						"Start Date",
-						moment(startDate).unix(),
-						moment(startDate).format("DD-MM-YYYY HH:mm")
-					);
-					// change date to miliseconds and assign to state
-					setStartDate(moment(startDate).unix());
-					setEndDate(moment(endDate).unix());
+			<div
+				style={{
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "space-between",
+					padding: "15px",
 				}}
-			/>
+			>
+				<DateRangePicker
+					startDate={startDate}
+					endDate={endDate}
+					onApplyCallback={(startDate, endDate) => {
+						console.log(
+							"Start Date",
+							moment(startDate).unix(),
+							moment(startDate).format("DD-MM-YYYY HH:mm")
+						);
+						// change date to miliseconds and assign to state
+						setStartDate(moment(startDate).unix());
+						setEndDate(moment(endDate).unix());
+					}}
+				/>
+
+				<Select
+					styles={{
+						container: (provided) => ({
+							...provided,
+							width: "500px",
+						}),
+					}}
+					value={selectedColumns}
+					options={columnOptions}
+					isMulti
+					onChange={(selectedOptions) => {
+						console.log("Selected Options", selectedOptions);
+						setSelectedColumns(selectedOptions);
+					}}
+				/>
+			</div>
 
 			{/* <h1>Default Query Builder</h1>
 
