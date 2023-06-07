@@ -31,7 +31,7 @@ const App = () => {
 		// const localEndDate = moment(new Date(2023, 0, 20)).unix();
 
 		await fetch(
-			`http://localhost:3000/?mongooseQuery=${mongooseQuery}&startDate=${startDate}&endDate=${endDate}`
+			`http://localhost:3000/?mongooseQuery=${mongooseQuery}&startDate=${startDate}&endDate=${endDate}&skip=${skip}&limit=${limit}`
 			// `http://localhost:3000/?mongooseQuery=${mongooseQuery}&startDate=${localStartDate}&endDate=${localEndDate}`
 		)
 			.then((res) => res.json())
@@ -65,15 +65,47 @@ const App = () => {
 				}}
 			/> */}
 
-			<h1>Query Builder with Custom Field Component</h1>
-			<CustomQueryBuilderWithField
-				onExecuteQuery={(query) => {
-					setMongooseQuery(query);
-				}}
-			/>
+			<div>
+				<h1>Query Builder with Custom Field Component</h1>
+				<CustomQueryBuilderWithField
+					onExecuteQuery={(query) => {
+						setMongooseQuery(query);
+					}}
+				/>
+			</div>
 
 			{/* <h1>Query Builder with Custom Value Component</h1>
 			<CustomQueryBuilderWithValue /> */}
+
+			<div
+				style={{
+					display: "flex",
+					gap: "10px",
+					margin: "50px 0px",
+				}}
+			>
+				<div>
+					<h3>Skip</h3>
+					<input
+						type="number"
+						value={skip}
+						onChange={(e) => {
+							setSkip(e.target.value);
+						}}
+					/>
+				</div>
+
+				<div>
+					<h3>Limit</h3>
+					<input
+						type="number"
+						value={limit}
+						onChange={(e) => {
+							setLimit(e.target.value);
+						}}
+					/>
+				</div>
+			</div>
 
 			<button onClick={() => queryData()}>Query Data</button>
 
@@ -82,19 +114,19 @@ const App = () => {
 					height: "170px",
 					width: "100%",
 				}}
-			></div>
-
-			<Table
-				data={data}
-				limit={limit}
-				skip={skip}
-				onLimitChange={(limit) => {
-					setLimit(limit);
-				}}
-				onSkipChange={(skip) => {
-					setSkip(skip);
-				}}
-			/>
+			>
+				<Table
+					data={data}
+					limit={limit}
+					skip={skip}
+					onLimitChange={(limit) => {
+						setLimit(limit);
+					}}
+					onSkipChange={(skip) => {
+						setSkip(skip);
+					}}
+				/>
+			</div>
 		</>
 	);
 };

@@ -27,13 +27,13 @@ const Company = mongoose.model("Company", CompanySchema);
 app.get("/", async (req, res) => {
 	try {
 		const mongooseQuery = req.query.mongooseQuery;
-		const startDate = req.query.startDate;
-		const endDate = req.query.endDate;
+		const startDate = req.query.startDate; // Unix timestamp
+		const endDate = req.query.endDate; // Unix timestamp
+
+		const skip = Number(req.query.skip) || 0;
+		const limit = Number(req.query.limit) || 10;
 
 		const pipeline = [];
-
-		console.log("start date", new Date(startDate * 1000));
-		console.log("end date", new Date(endDate * 1000));
 
 		// Stage 1: Filter by date range using Unix timestamps
 		pipeline.push({
@@ -53,7 +53,10 @@ app.get("/", async (req, res) => {
 		// Stage 3: Apply any additional stages or operations to the pipeline as needed
 
 		// Execute the aggregate query
-		const result = await Company.aggregate(pipeline).exec();
+		const result = await Company.aggregate(pipeline)
+			.skip(skip)
+			.limit(limit)
+			.exec();
 
 		res.json(result);
 	} catch (error) {
@@ -81,8 +84,5 @@ app.listen(3000, () => {
 		})
 		.then(() => {
 			console.log("Connected to MongoDB");
-			// Company.deleteMany({}).then(() => {
-			// 	console.log("Deleted all documents");
-			// });
 		});
 });
