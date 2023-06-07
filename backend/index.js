@@ -7,6 +7,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const DATE_FIELD = "timestamp";
+
 const CompanySchema = new mongoose.Schema({
 	id: Number,
 	name: String,
@@ -28,17 +30,32 @@ app.get("/", async (req, res) => {
 		const startDate = req.query.startDate;
 		const endDate = req.query.endDate;
 
-		//	aggregate query to:
-		//	1. filter by date range
-		//	2. filter using provided mongoose query
+		const pipeline = [];
 
-		
+		console.log("start date", new Date(startDate * 1000));
+		console.log("end date", new Date(endDate * 1000));
 
-		const data = await Company.find(
-			mongooseQuery ? JSON.parse(mongooseQuery) : {}
-		);
+		// Stage 1: Filter by date range using Unix timestamps
+		pipeline.push({
+			$match: {
+				[DATE_FIELD]: {
+					$gte: new Date(startDate * 1000), // Convert Unix timestamp to milliseconds
+					$lte: new Date(endDate * 1000), // Convert Unix timestamp to milliseconds
+				},
+			},
+		});
 
-		res.json(data);
+		// Stage 2: Add custom query conditions based on dynamicConditions
+		pipeline.push({
+			$match: JSON.parse(mongooseQuery || "{}"),
+		});
+
+		// Stage 3: Apply any additional stages or operations to the pipeline as needed
+
+		// Execute the aggregate query
+		const result = await Company.aggregate(pipeline).exec();
+
+		res.json(result);
 	} catch (error) {
 		console.log(error);
 		res.json([]);
