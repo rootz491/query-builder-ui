@@ -5,11 +5,13 @@ import moment from "moment";
 const DatePicker = ({ now = new Date(), onApplyCallback }) => {
 	const [start, setStart] = React.useState(
 		moment(
-			new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
+			// new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
+			new Date(2022, 0, 1, 0, 0, 0, 0)
 		)
 	);
 	const [end, setEnd] = React.useState(
-		moment(now).add(1, "days").subtract(1, "seconds")
+		// moment(now).add(1, "days").subtract(1, "seconds")
+		moment(new Date(2023, 0, 1, 0, 0, 0, 0))
 	);
 
 	const applyCallback = (startDate, endDate) => {
@@ -30,7 +32,7 @@ const DatePicker = ({ now = new Date(), onApplyCallback }) => {
 		format: "DD-MM-YYYY HH:mm",
 		sundayFirst: false,
 	};
-	let maxDate = moment(start).add(24, "hour");
+	let maxDate = moment(new Date(2030, 0, 1, 0, 0, 0, 0));
 
 	return (
 		<div>

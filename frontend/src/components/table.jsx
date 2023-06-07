@@ -2,7 +2,13 @@ import React, { useMemo } from "react";
 import MaterialReactTable from "material-react-table";
 import moment from "moment";
 
-const Table = ({ data = [] }) => {
+const Table = ({
+	data = [],
+	skip,
+	limit,
+	onLimitChange = () => {},
+	onSkipchange = () => {},
+}) => {
 	//should be memoized or stable
 	const columns = useMemo(
 		() => [
@@ -57,13 +63,8 @@ const Table = ({ data = [] }) => {
 	return (
 		<MaterialReactTable
 			columns={columns}
-			// data={() =>
-			// 	data.map((row) => ({
-			// 		...row,
-			// 		timestamp: moment(row.timestamp).format("DD-MM-YYYY HH:mm:ss"),
-			// 	}))
-			// }
-      data={data}
+			data={data}
+			enablePagination={true}
 		/>
 	);
 };
